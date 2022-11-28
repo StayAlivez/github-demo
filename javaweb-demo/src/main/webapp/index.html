@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CodePen - Login Form - Modal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons'>
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        #checkCodeImg {
+            margin-top: 5px;
+        }
+        #usernameTips,
+        #passwordTips{
+            display: none;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+<!-- partial:index.partial.html -->
+<!-- Form-->
+<div class="form" id="form">
+    <div class="form-toggle"></div>
+    <div class="form-panel one">
+        <div class="form-header">
+            <h1>Account Login</h1>
+        </div>
+        <div class="form-content">
+            <form action="user/add" method="post">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required="required"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required="required"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-remember">
+                        <input type="checkbox"/>记住我
+                    </label><a class="form-recovery" href="#">忘记密码?</a>
+                </div>
+                <div class="form-group">
+                    <button type="submit">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="form-panel two">
+        <div class="form-header">
+            <h1>Register Account</h1>
+        </div>
+        <div class="form-content">
+            <form action="user/register" method="get">
+                <div class="form-group">
+                    <label for="regusername">用户名</label> <span id="usernameTips"></span>
+                    <input type="text" id="regusername" name="username" required="required" placeholder="不能为空" @blur="blur()"></input>
+                </div>
+                <div class="form-group">
+                    <label for="regpassword">密码</label>
+                    <input type="password" id="regpassword" name="password" required="required"></input>
+                </div>
+                <div class="form-group">
+                    <label for="regcpassword">重复密码</label> <span id="passwordTips"></span>
+                    <input type="password" id="regcpassword" name="cpassword" required="required" @blur="blurpassword()"></input>
+                </div>
+                <div class="form-group">
+                    <label for="regemail">邮箱</label>
+                    <input type="email" id="regemail" name="email" required="required"></input>
+                </div>
+                <div class="form-group">
+                    <label for="username">验证码</label>
+                    <input type="text" id="yzm" name="yzm" required="required"></input>
+                    <img id="checkCodeImg" src="user/checkCode"  @click="anew()" />
+                </div>
+                <div class="form-group">
+                    <button type="submit">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="pen-footer" style="display: none;"><a
+        href="" target="_blank"><i
+        class="material-icons">arrow_backward</i>View on Behance</a><a
+        href="" target="_blank">View on Github<i
+        class="material-icons">arrow_forward</i></a></div>
+<!-- partial -->
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://codepen.io/andytran/pen/vLmRVp.js'></script>
+<script src="js/index.js"></script>
+
+<script src="js/vue.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+
+<!--刷新验证码-->
+<!--<script>
+    document.getElementById("checkCodeImg").addEventListener("click", function () {
+
+    })
+</script>-->
+<script>
+    new Vue({
+        // 绑定div
+        el: "#form",
+        // 页面加载完成后执行
+        mounted() {
+
+        },
+        // 方法
+        methods: {
+            anew(){
+                document.getElementById("checkCodeImg").src = "user/checkCode?" + new Date().getMilliseconds();
+            },
+            blur(){
+                var username = document.getElementById("regusername").value;
+                axios({
+                    method: "get",
+                    url: "user/selectUser?username="+username,
+                }).then(resp =>{
+                    let usernameTips = document.getElementById("usernameTips");
+                    if ("exist"==resp.data){
+                        usernameTips.innerHTML="用户名已存在"
+                        usernameTips.style.color="red";
+                        usernameTips.style.display="block";
+                    }else if("noexist"==resp.data){
+                        usernameTips.innerHTML="用户名可用"
+                        usernameTips.style.color="blue";
+                        usernameTips.style.display="block";
+                    }
+                })
+            },
+            blurpassword(){
+                let password = document.getElementById("regpassword").value;
+                let repassword = document.getElementById("regcpassword").value;
+                let passwordTips = document.getElementById("passwordTips");
+                if (password!=repassword){
+                    passwordTips.innerHTML="两次输入的密码不一致 (无所谓,只有前台验证)"
+                    passwordTips.style.color="red";
+                    passwordTips.style.display="block";
+                }else {
+                    passwordTips.style.display="none";
+                }
+            },
+            onSubmit(){
+                axios({
+                    method: "post",
+                    url: "user/register",
+                    data: "",
+                }).then(resp =>{
+
+                })
+
+            },
+        },
+        // 数据
+        data(){
+            return{
+
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

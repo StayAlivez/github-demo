@@ -13,6 +13,7 @@ public class Demo {
         boolean b = integer instanceof Object;
         System.out.println(b);
 
+
     }
 
 
